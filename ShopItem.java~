@@ -1,0 +1,42 @@
+/**
+ * @author Gregory Cremins
+ * @version 3-28-2012
+ * Class to define a ShopItem with a few values.
+ */
+public class ShopItem extends Item{
+ public String name;
+ public int pointValue;
+ public boolean isOwned = false;
+ public int price;
+   
+  public Item(String name, int pointValue, int price)
+  {
+    this.name = name;
+    this.pointValue = pointValue;
+    this.price = price;
+  }
+ /**
+  * Method to return the name of an item
+  * @return the name of the item
+  */
+  public String getName()
+  {
+    return this.name;
+  }
+  /**
+  * Method to return the point value of an item
+  * @return the point value of the item
+  */
+  public int getPointValue()
+  {
+    return this.pointValue;
+  }
+  /**
+   * Method to get the price of a ShopItem
+   * @return the price of the item
+   */
+  public int getPrice()
+  {
+    return price;
+  }
+}

@@ -1,0 +1,13 @@
+public class Location{
+  int[][] SpecialLocations;
+  int[][] HallwayLoacations;
+  String description();
+  int numb_Coins;
+  String[] items;
+ 
+  public Location(int[][] SpecialLocations, int[][] HallwayLocations, String Description)
+  {
+    SpecialLocations = new int[][] {{4,3}}; 
+    
+    
+  }

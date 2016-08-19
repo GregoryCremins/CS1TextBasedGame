@@ -1,0 +1,200 @@
+/**
+ * @author Gregory Cremins
+ * @version 2-11-2012
+ * Class GameApp to run the Game
+ */
+
+import java.util.*;
+
+public class GameApp{
+  public static Location tempLocation;
+  static Player p1 = new Player();
+  static boolean gameEnd = false;
+  static Location currentLoc;
+  //create two array of items. some of the items are junk, some are important.
+  public static Item[] supplyItems = new Item[] {new Item("Knife", 30), new Item("Can of Soup", 5), new Item("Paint brush", 5), new Item("Mop", 0)};
+  public static Item[] keyRoomItems = new Item[]{new Item("Graph", 10), new Item("Pen", 1), new Item("Key", 10), new Item("Picture of Two Guys", 10), new Item("Table of figures", 5)};
+ //loads the map
+  static Map map1 = new Map("J:/TextBasedGame/MAP.jpg");
+  //adds all of the possible locations in arrays
+  static Location[] SpecialLocations = new Location[] {new Location (4,3), new Location (1,3), new Location (8,3), new Location(6,5, supplyItems), new Location(6,6), new Location(4,6), new Location (0,1), new Location (0,6), new Location (3,0, keyRoomItems), new Location (3,1)};
+  static Location[] HallwayLocations = new Location[] {new Location(0,5), new Location(1,1), new Location(1,2), new Location(1,4), new Location(1,5), new Location(1,6), new Location(2,3), new Location(3,3), new Location(4,0), new Location(4,1), new Location(4,2), 
+    new Location(4,4), new Location(4,5), new Location(5,3), new Location(5,6), new Location(6,3), new Location(7,3), new Location(7,6), new Location(8,4), new Location(8,5), new Location(8,6)};
+  /**
+   *Method to run the game
+   */
+    public static void main(String[] args){
+    GameApp.run();
+  }
+  /**
+   * Method that runs the game. Including all of the inputs.
+   */
+  public static void run()
+  {
+    //starts with opening text and then loops
+    String nextDesc = null;
+    Location nextMove = null;
+    currentLoc = new Location(4, 3);
+    Scanner sc1 = new Scanner(System.in); 
+    String command;
+    System.out.println("Welcome to The Game that Started It All..... THE UNKNOWN LABORATORY \n \n \n \n \n");
+    System.out.print("You awake on the floor surrounded by gooey mystery fluid. Your body aches as if a syringe was just pulled out of every muscle of your body. \n It is dark. You begin to get up but feel the sting of crunching glass underneath the palms of your hands. You get to your feet and wince as you pull an inch-long piece of glass from your bleeding palm. \n You look around. Around you dozens of glowing tubes faintly illuminate the room.  You go up to one and notice the person inside looks exactly like you. \n Where am I? You ask yourself silently as you look around. A body of a scientist lay crumpled up on the floor. You read the tag. Instead of an ID, a message has been placed in there. (Type t for the message) \n You add the note to your inventory. You notice that there is no blood on the scientist. His neck is twisted the wrong direction. \n You decide to take his clothing to blend in. You feel something soft in his pocket. You reach in and find a map to the facility you are currently in (Type m to see map). \n Time to get moving before people notice the body.");
+    System.out.println(currentLoc.getDesc(HallwayLocations, SpecialLocations));
+    while(gameEnd != true)
+    {
+     command = sc1.nextLine();
+     boolean flag = false;
+     if(command.compareTo("n") == 0)
+     {
+      nextMove = new Location(currentLoc.xPosn, currentLoc.yPosn - 1);
+      nextDesc = nextMove.getDesc(HallwayLocations, SpecialLocations);   
+      System.out.println(nextDesc);
+      flag = true;
+     }
+     if(command.compareTo("s") == 0)
+     {
+      nextMove = new Location(currentLoc.xPosn, currentLoc.yPosn + 1);
+      nextDesc = nextMove.getDesc(HallwayLocations, SpecialLocations);      
+      System.out.println(nextDesc);
+      flag = true;
+     }
+      if(command.compareTo("e") == 0)
+     {
+      nextMove = new Location(currentLoc.xPosn + 1, currentLoc.yPosn );
+      nextDesc = nextMove.getDesc(HallwayLocations, SpecialLocations);
+      System.out.println(nextDesc);
+      flag = true;
+     }
+      if(command.compareTo("w") == 0)
+     {
+      nextMove = new Location(currentLoc.xPosn - 1, currentLoc.yPosn);
+      nextDesc = nextMove.getDesc(HallwayLocations, SpecialLocations);      
+      System.out.println(nextDesc);
+      flag = true;
+     }
+      if(command.compareTo("q") ==0)
+      {
+       System.out.println("You scream at the top of your lungs: HEEEEELP! Dozens of men in armor with launchers come in and surround you. A voice says: \"Oh come now, I thought you would make it this time....\" \n GAME OVER");
+       break;
+      } 
+       if(command.compareTo("m") ==0)
+      {
+       System.out.println("You take a look at the map.");
+       map1.show();
+      flag = true;
+      }
+      if(command.compareTo("j") ==0)
+      {
+       System.out.println("The message is scribbled in ink and is barely legible. A few words have been crossed out. This is what you can make out: \n \n Escape while you can.\n They are watching us.\n I believe you can break the cycle.\n If you don’t have a weapon, run.\n If you don’t want to play anymore, simply yell “help”.\n I have already escaped.\n Find the key.\n If your brother comes....\n Running out of time.\n Don’t....\n Win……");
+       flag = true;
+      }
+      if(nextDesc!= null && nextMove != null && nextDesc.compareTo("You bonk your head against the wall. BONK! You think you hear a voice laughing at you.....") != 0)
+      {
+       nextMove.resolveEvent(p1, sc1);
+       nextMove = getSpecialLocation(nextMove);
+       currentLoc = nextMove; 
+       flag = true;
+       p1.steps++;
+       if(nextDesc.compareTo("Another guard stands in front of you. He is in full body armor. He stares at you with pure disgust. Does he know that you're not a scientist? He holds what looks like a hallow tube with the letters NYAN on it.....") == 0 || nextDesc.compareTo("A guard is trying to use a vending machine with little success. He doesn't seem to take notice of you as you pass by.") == 0)
+       command = sc1.nextLine();
+      }
+      if(command.compareTo("h") == 0)
+      {
+        System.out.println("Use n,s,w,e for directionss, m for map, j for note, t for take, h for help, r for repeat, i for inventory, or q to quit.");
+        flag = true;
+      }
+      if(command.compareTo("r") == 0)
+      {
+        System.out.println(currentLoc.getDesc(HallwayLocations, SpecialLocations));
+           flag = true;
+      }
+      if(command.compareTo("t") == 0)
+      {
+        take(currentLoc, sc1, p1);
+       flag = true; 
+      }
+      if(command.compareTo("i") == 0)
+      {
+        p1.displayInventory();
+      }
+      if(flag != true)
+      {
+        System.out.println("Unknown command. Try using n,s,w,e for directionss, m for map, j for note, t for take, h for help, r for repeat, i for inventory, or q to quit.");
+      }
+      
+      if(currentLoc.checkEnd())
+        break;
+    }
+  }
+  /**
+   *Method to take objects at a given location
+   * @param location the current location
+   * @param sc the current scanner being used
+   * @param p1 the current player
+   */
+  public static void take(Location location, Scanner sc, Player p1)
+  {
+    //gets the array of items
+    Item[] roomItems = location.getItemList();
+      if(roomItems.length == 0)
+      {
+        System.out.println("There is nothing for you to take in this room.");
+        return;
+      }
+      //lists the things that are still up for grabs
+      System.out.println("Here are the things that you could take away from this room: ");
+    for(int i = 0; i < roomItems.length; i++)
+    { if(roomItems[i].isOwned == false)
+      System.out.println((i + 1) + ") A " + roomItems[i].name);
+    else
+      System.out.println();
+    }
+    System.out.println("Which one would you like? Use corresponding numbers to answer, or 0 to quit");
+    int choice = sc.nextInt();
+    if(choice <= 0 || roomItems[choice - 1].isOwned || choice >= 5)
+    {
+      System.out.println("You decide to take nothing.");
+      return;
+    }
+    //player has 5 junk spots. They can fill those with useless items that are worth a few points. if it's full, you can't take on any more junk.
+    if(p1.numJunk >= 5)
+    {
+      System.out.println("You have too much useless junk already.");
+      return;
+    }
+    //if its a special item, it goes to the player's items list
+    for(int j = 0; j < p1.items.length; j++)
+    {
+     if(p1.items[j].name.compareTo(roomItems[choice - 1].name) == 0) 
+     {
+       System.out.println("You take the " + roomItems[choice - 1].name + ".");
+       p1.items[j].isOwned = true;
+       location.ownItem(choice - 1);
+       return;
+     }
+    }
+    //otherwise it goes to their junk list.
+    System.out.println("You take the " + roomItems[choice - 1].name + ".");
+    p1.items[p1.numJunk] = roomItems[choice];
+    p1.numJunk++;
+    location.ownItem(choice - 1);
+    return;  
+  }
+  /**
+   * Method to set a special location to the current location. I realized I needed this when in the code, I was making new locations for each step and each location has a specific array of items.
+   * Using this, it will keep track of the items at given locations.
+   * @param loc the current location
+   * @return the specific location that the player is at including the array of items if necessary.
+   */
+  public static Location getSpecialLocation(Location loc)
+  {
+    for(Location comploc: SpecialLocations)
+    {
+     if(comploc.xPosn == loc.xPosn && comploc.yPosn == loc.yPosn)
+     {
+       return comploc;
+    }
+  }
+    return loc;
+}
+}
